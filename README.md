@@ -1,4 +1,4 @@
-DanceSequence.Repositorium
+#DanceSequence.Repositorium
 
 Application to manage your base of movements of differents dances.
 Allows
@@ -7,9 +7,13 @@ Allows
 <li>-Add available moves after and before current move.
 <li>-Create sequences of moves.
 
-Technology
+#Technology
+-C# .NET CORE 5 with Entity Framework and swagger
+-MS SQL Server13 
+-Framework Angular with TypeScript and Bootstrap.
 
-
-Api- C# .NET CORE 5 with Entity Framework, MS SQL Server and Swagger
-
-Fronted - Framework Angular with TypeScript and Bootstrap.
+#Instalations
+- Clone this repository
+- Change in appsettings.json db connection
+- Update(create) dabase.
+- Build and run project from visual. It automaticcly run angular part too. 
