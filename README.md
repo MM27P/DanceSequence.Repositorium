@@ -9,5 +9,7 @@ Allows
 
 Technology
 
+
 Api- C# .NET CORE 5 with Entity Framework, MS SQL Server and Swagger
+
 Fronted - Framework Angular with TypeScript and Bootstrap.
