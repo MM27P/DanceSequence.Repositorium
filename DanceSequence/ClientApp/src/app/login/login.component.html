@@ -1,0 +1,36 @@
+<h2>LOGG IN</h2>
+<!-- Wyświetlanie bledów z serwera jeżeli lista nie jest pusta-->
+<div *ngIf="serverErrors && serverErrors.length > 0">
+    <div *ngFor="let err of serverErrors">
+        {{err}}
+    </div>
+</div>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-wrapper">
+        <div class="form-group">
+            <label class ="form-label" for="Login"><b>Login</b></label>
+            <input class = "form-input" type="text" formControlName="Login"/>
+            <!-- Sprawdzenie czy nie wystąpiły błedy -->
+            <!-- Wyświetlenie błędów zwróconych przez walidator-->
+            <div *ngIf="submitted && formControls.Login.errors">
+                <div *ngIf="formControls.Login.errors.required">Login is required</div>
+                <div *ngIf="formControls.Login.errors.minlength">Login must be at least 3 characters</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class ="form-label" for="Password"><b>Password</b></label>
+            <input class = "form-input" type="password" formControlName="Password" />
+            <!-- Sprawdzenie czy nie wystąpiły błedy -->
+            <!-- Wyświetlenie błędów zwróconych przez walidator-->
+            <div *ngIf="submitted && formControls.Password.errors">
+                <div *ngIf="formControls.Password.errors.required">Password is required</div>
+                <div *ngIf="formControls.Password.errors.minlength">Password must be at least 3 characters</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <!-- Angular wprowadza wiele dodatkowych pol jak i modyfikuje pola htmlowe - tak aby był do nich dostęp za pomocą databindingu -->
+            <button [disabled]="waitingForData">Login</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,276 @@
+<div *ngIf="currentPage ==0">
+    <h4>Taniec</h4>
+    <select name="danceList" (change)="changeDance($event.target.value)">
+        <option *ngFor="let dance of dances" [value]="dance.id">{{dance.name}}</option>
+    </select>
+    <div *ngIf="!moves">
+        <p>Wybierz jeden z dostępnych tańców, aby wyświetlić listę ruchów</p>
+    </div>
+    <div *ngIf="currentDanceId">
+        <button id="add" (click)="addMoveProcess()">Add</button>
+    </div>
+    <div *ngIf="moves">
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Nazwa</th>
+                <th>Opis</th>
+                <th>Opcje</th>
+            </tr>
+            <tr *ngFor="let move of moves" (click)="selectMove(move.id);">
+                <td>{{move.id}}</td>
+                <td>{{move.name}}</td>
+                <td>{{move.description}}</td>
+                <td><button id="Delete" (click)="deleteMove(move.id)">Delete</button></td>
+            </tr>
+        </table>
+    </div>
+    <div *ngIf="currentMove" class="main-contener">
+        <h3> Wybrany ruch</h3>
+        <div class="wrapper">
+            <div><b>Id: {{currentMove.id}}</b></div>
+            <div><b>Name: {{currentMove.name}}</b></div>
+            <div><b>Opis: {{currentMove.description}}</b></div>
+            <button id="update" (click)="tagSelected(tag)">Update</button>
+        </div>
+        <div class="grid-container">
+            <div class="item">
+                <div class="Header">
+                    <h5>Ruchy poprzedzające</h5>
+                </div>
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nazwa</th>
+                        <th>Opis</th>
+                    </tr>
+                    <tr *ngFor="let move of currentMove.preMoves">
+                        <td>{{move.id}}</td>
+                        <td>{{move.name}}</td>
+                        <td>{{move.description}}</td>
+                    </tr>
+                </table>
+                <button id="updatePreMoves" (click)="goUpdateSection(2)">Update</button>
+            </div>
+            <div class="item">
+                <div class="Header">
+                    <h5>Alternatywy</h5>
+                </div>
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nazwa</th>
+                        <th>Opis</th>
+                    </tr>
+                    <tr *ngFor="let alternation of currentMove.alternations">
+                        <td>{{alternation.id}}</td>
+                        <td>{{alternation.value}}</td>
+                        <td>{{alternation.description}}</td>
+                    </tr>
+                </table>
+                <button id="updateAlternations" (click)="goUpdateSection(3)">Update</button>
+            </div>
+            <div class="item">
+                <div class="Header">
+                    <h5>Ruchy następujące</h5>
+                </div>
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nazwa</th>
+                        <th>Opis</th>
+                    </tr>
+                    <tr *ngFor="let move of currentMove.proMoves">
+                        <td>{{move.id}}</td>
+                        <td>{{move.name}}</td>
+                        <td>{{move.description}}</td>
+                    </tr>
+                </table>
+                <button id="updatePostMoves" (click)="goUpdateSection(4)">Update</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <h5>TAGI</h5>
+            <ul>
+                <div *ngFor="let tag of currentMove.tags">
+                    <li>{{tag.value}}</li>
+                </div>
+            </ul>
+            <button id="updateTags" (click)="goUpdateSection(5)">Update</button>
+        </div>
+    </div>
+</div>
+<div *ngIf="currentPage == 1" class="wrapper">
+    <form [formGroup]="moveForm" (ngSubmit)="onSubmit()">
+        <h3>Dane ruchu</h3>
+        <div class="form-group">
+            <div class="">
+                <div>
+                    <label for="moveName">Nazwa</label>
+                </div>
+                <div><input type="text" formControlName="moveName" /></div>
+            </div>
+            <div class="">
+                <div>
+                    <label for="moveDescription">Opis</label>
+                </div>
+                <div><input type="text" formControlName="moveDescription" /></div>
+            </div>
+            <!-- Sprawdzenie czy nie wystąpiły błedy -->
+            <!-- Wyświetlenie błędów zwróconych przez walidator-->
+            <div *ngIf="submitted && formControls.moveName.errors">
+                <div *ngIf="formControls.moveName.errors.required">Name is required</div>
+                <div *ngIf="formControls.moveName.errors.minlength">Name must be at least 3 characters</div>
+            </div>
+            <div *ngIf="submitted && formControls.moveDescription.errors">
+                <div *ngIf="formControls.moveDescription.errors.required">Description is required</div>
+                <div *ngIf="formControls.moveDescription.errors.minlength">Description must be at least 3 characters
+                </div>
+            </div>
+            <select name="danceList" (change)="changeDance($event.target.value)">
+                <option *ngFor="let dance of dances" [value]="dance.id">{{dance.name}}</option>
+            </select>
+            <div class="buttons">
+                <button id="Save" (click)="saveMoveBase()">Save</button>
+                <button id="cancel" (click)="goSection(0)">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div *ngIf="currentPage == 2">
+    <h3>Ruchy poprzedzające</h3>
+    <table class="moveTable">
+        <tr>
+            <th>Nr</th>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Opcje</th>
+        </tr>
+        <tr *ngFor="let move of choosenMoves;  let i=index;">
+            <td>{{i}}</td>
+            <td>{{move.id}}</td>
+            <td>{{move.name}}</td>
+            <td>{{move.description}}</td>
+            <td><button id="Delete" (click)="unchooseMove(i)">Delete</button></td>
+        </tr>
+        <tr>
+            <select class="select" name="moveList" (change)="chooseMove($event.target.value)">
+                <option *ngFor="let move of availableMoves;  let i=index;" [value]="i">{{move.name}}</option>
+            </select>
+        </tr>
+    </table>
+    <button id="Save" (click)="savePreMoves()">Save</button>
+    <button id="cancel" (click)="goSection(0)">Cancel</button>
+</div>
+<div *ngIf="currentPage == 3">
+    <h3>Alternatywy</h3>
+    <table class="moveTable">
+        <tr>
+            <th>Nr</th>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Opcje</th>
+        </tr>
+        <tr *ngFor="let alternation of alternations;  let i=index;">
+            <td>{{i}}</td>
+            <td>{{alternation.id}}</td>
+            <td>{{alternation.value}}</td>
+            <td>{{alternation.description}}</td>
+            <td><button id="Delete" (click)="deleteAlternation(i)">Delete</button></td>
+        </tr>
+    </table>
+    <div clas="wrapper">
+        <form [formGroup]="alternationForm" (ngSubmit)="addAlternation()">
+            <h3>Dane ruchu</h3>
+            <div class="form-group">
+                <div class="">
+                    <div>
+                        <label for="alternationName">Nazwa</label>
+                    </div>
+                    <div><input type="text" formControlName="alternationName" /></div>
+                </div>
+                <div class="">
+                    <div>
+                        <label for="alternationDescription">Opis</label>
+                    </div>
+                    <div><input type="text" formControlName="alternationDescription" /></div>
+                </div>
+                <!-- Sprawdzenie czy nie wystąpiły błedy -->
+                <!-- Wyświetlenie błędów zwróconych przez walidator-->
+                <div *ngIf="submitted && formControls.alternationName.errors">
+                    <div *ngIf="formControls.alternationName.errors.required">Name is required</div>
+                    <div *ngIf="formControls.alternationName.errors.minlength">Name must be at least 3 characters</div>
+                </div>
+                <div *ngIf="submitted && formControls.alternationDescription.errors">
+                    <div *ngIf="formControls.alternationDescription.errors.required">Description is required</div>
+                    <div *ngIf="formControls.alternationDescription.errors.minlength">Description must be at least 3
+                        characters
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button id="Save">Add</button>
+                    <button id="cancel" (click)="goSection(0)">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <button id="Save" (click)="saveAlternation()">Save</button>
+</div>
+<div *ngIf="currentPage == 4">
+    <h3>Ruchy następujące</h3>
+    <table class="moveTable">
+        <tr>
+            <th>Nr</th>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Opcje</th>
+        </tr>
+        <tr *ngFor="let move of choosenMoves;  let i=index;">
+            <td>{{i}}</td>
+            <td>{{move.id}}</td>
+            <td>{{move.name}}</td>
+            <td>{{move.description}}</td>
+            <td><button id="Delete" (click)="unchooseMove(i)">Delete</button></td>
+        </tr>
+        <tr>
+            <select class="select" name="moveList" (change)="chooseMove($event.target.value)">
+                <option *ngFor="let move of availableMoves;  let i=index;" [value]="i">{{move.name}}</option>
+            </select>
+        </tr>
+    </table>
+    <div class="buttons">
+        <button id="Save" (click)="savePostMoves()">Save</button>
+        <button id="cancel" (click)="goSection(0)">Cancel</button>
+    </div>
+</div>
+<div *ngIf="currentPage == 5">
+    <h3>Tagi</h3>
+    <table class="moveTable">
+        <tr>
+            <th>Nr</th>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Opcje</th>
+        </tr>
+        <tr *ngFor="let tag of choosenTags;  let i=index;">
+            <td>{{i}}</td>
+            <td>{{tag.id}}</td>
+            <td>{{tag.value}}</td>
+            <td>{{tag.description}}</td>
+            <td><button id="Delete" (click)="unchooseTag(i)">Delete</button></td>
+        </tr>
+        <tr>
+            <select class="select" name="tagList" (change)="chooseTag($event.target.value)">
+                <option *ngFor="let tag of availableTags;  let i=index;" [value]="i">{{tag.value}}</option>
+            </select>
+        </tr>
+    </table>
+    <div class="buttons">
+        <button id="Save" (click)="saveTags()">Save</button>
+        <button id="cancel" (click)="goSection(0)">Cancel</button>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+<!-- Wyświetlenie listy użytkowników-->
+<div>
+    <h2> Obecne sekwencje</h2>
+    <table class="sequencesTable">
+        <tr>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Liczba ruchów</th>
+            <th>Opcje</th>
+        </tr>
+        <tr *ngFor="let sequence of sequences" (click)="selectSequence(sequence);">
+            <td>{{sequence.id}}</td>
+            <td>{{sequence.name}}</td>
+            <td>{{sequence.movesNumber}}</td>
+            <td><button id="remove" (click)="delete(sequence.id)">Delete</button></td>
+        </tr>
+    </table>
+</div>
+<div *ngIf="currentSequence" class="currentSequenceContainer">
+    <h3> Wybrana sekwencja</h3>
+    <div class="wrapper">
+        <div><b>Id: {{currentSequence.id}}</b></div>
+        <div><b>Name: {{currentSequence.name}}</b></div>
+    </div>
+    <table class="sequencesTable">
+        <tr>
+            <th>Nr</th>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+        </tr>
+        <tr *ngFor="let move of currentSequence.moves;  let i=index;">
+            <td>{{i}}</td>
+            <td>{{move.id}}</td>
+            <td>{{move.name}}</td>
+            <td>{{move.description}}</td>
+        </tr>
+    </table>
+</div>
+<div *ngIf="!addSeqeunce">
+    <button id="Add" (click)="activateAddSequence()">Add</button>
+</div>
+
+<div *ngIf="addSeqeunce" class="currentMovesContainer">
+    <select name="danceList" (change)="changeDance($event.target.value)">
+        <option *ngFor="let dance of dances" [value]="dance.id">{{dance.name}}</option>
+    </select>
+    <div *ngIf="currentDanceId!=0">
+        <form [formGroup]="sequenceForm" (ngSubmit)="onSubmit()">
+            <h3>Nowa sekwencja</h3>
+            <table class="sequencesTable">
+                <tr>
+                    <th>Nr</th>
+                    <th>Id</th>
+                    <th>Nazwa</th>
+                    <th>Opis</th>
+                </tr>
+                <tr *ngFor="let move of currentMoves;  let i=index;">
+                    <td>{{i}}</td>
+                    <td>{{move.id}}</td>
+                    <td>{{move.name}}</td>
+                    <td>{{move.description}}</td>
+                </tr>
+                <tr>
+                    <select class="select" name="moveList" (change)="addMove($event.target.value)">
+                        <option *ngFor="let move of availableMoves" [value]="move.id">{{move.name}}</option>
+                    </select>
+                </tr>
+            </table>
+            <div class="form-group">
+                <div class="">
+                    <div>
+                        <label for="sequenceName">Nazwa</label>
+                    </div>
+                    <div><input type="text" formControlName="sequenceName" /></div>
+                </div>
+                <!-- Sprawdzenie czy nie wystąpiły błedy -->
+                <!-- Wyświetlenie błędów zwróconych przez walidator-->
+                <div *ngIf="submitted && formControls.sequenceName.errors">
+                    <div *ngIf="formControls.sequenceName.errors.required">Name is required</div>
+                    <div *ngIf="formControls.sequenceName.errors.minlength">Name must be at least 3 characters</div>
+                </div>
+                <div class="buttons">
+                    <button id="Save" (click)="callActivateSumbit()">Save</button>
+                    <button id="Delete" (click)="deleteLast()">DeleteLast</button>
+                    <button id="Cancel" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

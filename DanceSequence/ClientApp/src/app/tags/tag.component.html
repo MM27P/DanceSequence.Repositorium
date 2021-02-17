@@ -1,0 +1,52 @@
+<!-- Wyświetlenie listy użytkowników-->
+<h2>Dostępne tagi</h2>
+<table class="TagTable">
+    <tr>
+        <th>Id</th>
+        <th>Nazwa</th>
+        <th>Opis</th>
+        <th>Opcje</th>
+    </tr>
+    <tr *ngFor="let tag of tags">
+        <td>{{tag.id}}</td>
+        <td>{{tag.value}} </td>
+        <td>{{tag.description}}</td>
+        <td><button id="update" (click)="tagSelected(tag)">Update</button>
+            <button id="remove" (click)="deleteTag(tag.id)">Delete</button>
+        </td>
+    </tr>
+</table>
+<div *ngIf="!addTag">
+    <p>Naciśnij by dodać tag</p>
+    <button id="show" (click)="show()">Dodaj</button>
+</div>
+<div *ngIf="addTag || updateTag">
+    <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <div class="textContainer">
+                <label for="tagValue">Nazwa</label>
+                <input type="text" formControlName="tagValue" />
+            </div>
+            <!-- Sprawdzenie czy nie wystąpiły błedy -->
+            <!-- Wyświetlenie błędów zwróconych przez walidator-->
+            <div *ngIf="submitted && formControls.tagValue.errors">
+                <div *ngIf="formControls.tagValue.errors.required">Name is required</div>
+                <div *ngIf="formControls.tagValue.errors.minlength">Name must be at least 3 characters</div>
+            </div>
+            <div class="textContainer">
+                <label for="tagDescription">Opis</label>
+                <input type="text" formControlName="tagDescription" />
+            </div>
+            <!-- Sprawdzenie czy nie wystąpiły błedy -->
+            <!-- Wyświetlenie błędów zwróconych przez walidator-->
+            <div *ngIf="submitted && formControls.tagDescription.errors">
+                <div *ngIf="formControls.tagDescription.errors.required">Description is required</div>
+                <div *ngIf="formControls.tagDescription.errors.minlength">Description must be at least 3 characters
+                </div>
+            </div>
+            <!-- Przycisk akceptacji formularza -> wywołuje funkcję onSubmit -->
+            <button id="Cancel" (click)="callActivateSubmit()">Save</button>
+            <button id="Cancel" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
