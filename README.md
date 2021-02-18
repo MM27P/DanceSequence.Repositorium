@@ -8,11 +8,13 @@ Allows
 <li>-Create sequences of moves.
 
 #Technology
+
 -C# .NET CORE 5 with Entity Framework and swagger
 -MS SQL Server13 
 -Framework Angular with TypeScript and Bootstrap.
 
 #Instalations
+
 - Clone this repository
 - Change in appsettings.json db connection
 - Update(create) dabase.
